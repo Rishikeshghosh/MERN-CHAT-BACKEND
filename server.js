@@ -4,7 +4,7 @@ const dotenv = require("dotenv").config();
 const UserRoute = require("./Routes/userRoutes");
 const ChatRoute = require("./Routes/chatRoutes");
 const MessageRoute = require("./Routes/messageRoutes");
-const connectDB = require("./config/mongoDb");
+/* const connectDB = require("./config/mongoDb"); */
 const color = require("colors");
 const cors = require("cors");
 const path = require("path");
@@ -14,7 +14,7 @@ const { notFound, errorHandler } = require("./Middleware/errorHandler");
 
 const PORT = process.env.PORT;
 app.use(cors());
-connectDB();
+/* connectDB(); */
 app.use(express.json());
 app.use(express.static(path.resolve(__dirname, "build")));
 app.use("/", (req, res) => {
