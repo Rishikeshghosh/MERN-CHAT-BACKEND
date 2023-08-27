@@ -14,7 +14,7 @@ const PORT = process.env.PORT;
 app.use(cors());
 app.use(express.json());
 connectDB();
-app.use("/api", UserRoute);
+/* app.use("/api", UserRoute); */
 app.use("/api/chat", ChatRoute);
 app.use("/api/message", MessageRoute);
 
