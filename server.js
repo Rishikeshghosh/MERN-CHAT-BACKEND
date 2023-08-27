@@ -9,12 +9,11 @@ const color = require("colors");
 const cors = require("cors");
 const path = require("path");
 
-const { notFound, errorHandler } = require("./Middleware/errorHandler");
+/* const { notFound, errorHandler } = require("./Middleware/errorHandler"); */
 const PORT = process.env.PORT;
 app.use(cors());
-connectDB();
 app.use(express.json());
-app.use(express.static(path.resolve(__dirname, "build")));
+connectDB();
 app.use("/api", UserRoute);
 app.use("/api/chat", ChatRoute);
 app.use("/api/message", MessageRoute);
