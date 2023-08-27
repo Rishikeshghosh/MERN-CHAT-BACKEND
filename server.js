@@ -14,13 +14,10 @@ const { notFound, errorHandler } = require("./Middleware/errorHandler");
 
 const PORT = process.env.PORT;
 app.use(cors());
-
 app.use(express.json());
 connectDB();
-app.use(express.static(path.resolve(__dirname, "build")));
-app.use("/", (req, res) => {
-  res.send("uuuuu");
-});
+/* app.use(express.static(path.resolve(__dirname, "build"))); */
+
 app.use("/api", UserRoute);
 app.use("/api/chat", ChatRoute);
 app.use("/api/message", MessageRoute);
@@ -29,7 +26,7 @@ app.use(errorHandler);
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:3000", //http://localhost:300
+    origin: "http://localhost:3000", //http://localhost:300 //https://zodex-chat-app.onrender.com
     methods: ["GET", "POST", "PUT"],
   },
 });
