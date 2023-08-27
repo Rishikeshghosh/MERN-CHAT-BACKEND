@@ -8,8 +8,7 @@ const connectDB = require("./config/mongoDb");
 const color = require("colors");
 const cors = require("cors");
 const path = require("path");
-const http = require("http");
-const { Server } = require("socket.io");
+
 const { notFound, errorHandler } = require("./Middleware/errorHandler");
 const PORT = process.env.PORT;
 app.use(cors());
