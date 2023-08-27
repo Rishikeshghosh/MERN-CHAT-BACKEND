@@ -18,8 +18,6 @@ app.use(express.static(path.resolve(__dirname, "build")));
 app.use("/api", UserRoute);
 app.use("/api/chat", ChatRoute);
 app.use("/api/message", MessageRoute);
-app.use(notFound);
-app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`Server is running at port ${PORT}`.yellow.bold);
