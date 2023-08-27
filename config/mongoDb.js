@@ -1,18 +1,71 @@
-const { cyan } = require("colors");
+const express = require("express");
+const app = express();
+const dotenv = require("dotenv").config();
+const UserRoute = require("./Routes/userRoutes");
+const ChatRoute = require("./Routes/chatRoutes");
+const MessageRoute = require("./Routes/messageRoutes");
+const connectDB = require("./config/mongoDb");
 const color = require("colors");
-const mongoose = require("mongoose");
+const cors = require("cors");
+const path = require("path");
+const http = require("http");
+const { Server } = require("socket.io");
+const { notFound, errorHandler } = require("./Middleware/errorHandler");
+const PORT = process.env.PORT;
+app.use(cors());
+/* connectDB(); */
+app.use(express.json());
+app.use(express.static(path.resolve(__dirname, "build")));
+app.use("/", (req, res) => {
+  res.send("uuuuu");
+});
+app.use("/api", UserRoute);
+app.use("/api/chat", ChatRoute);
+app.use("/api/message", MessageRoute);
+app.use(notFound);
+app.use(errorHandler);
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:3000", //http://localhost:300
+    methods: ["GET", "POST", "PUT"],
+  },
+});
 
-const connectDB = async () => {
-  try {
-    const conn = await mongoose.connect(process.env.MONGO_URL, {
-      //process.env.MONGO_URL
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
+io.on("connection", (socket) => {
+  console.log(`User connected ${socket.id}`);
+
+  socket.on("setup", (userData) => {
+    socket.join(userData._id);
+
+    socket.emit("connected");
+  });
+
+  socket.on("join chat", (room) => {
+    socket.join(room);
+    console.log(`User connecte room : ${room}`);
+  });
+  socket.on("typing", (room) => socket.in(room).emit("typing"));
+  socket.on("stop typing", (room) => socket.in(room).emit("stop typing"));
+
+  socket.on("new message", (newMessageRecieved) => {
+    let chat = newMessageRecieved.chat;
+
+    if (!chat.users) return console.log("chat.users not defined");
+
+    chat.users.forEach((user) => {
+      if (user._id == newMessageRecieved.sender._id) return;
+
+      socket.in(user._id).emit("message recieved", newMessageRecieved);
     });
-    console.log(`MongoDB connecteed: ${conn.connection.host}`.cyan.underline);
-  } catch (err) {
-    console.error(`Error : ${err}`.red);
-    process.exit(1);
-  }
-};
-module.exports = connectDB;
+  });
+
+  socket.off("setup", () => {
+    console.log("USER DISCONNECTED");
+    socket.leave(userData._id);
+  });
+});
+
+app.listen(PORT, () => {
+  console.log(`Server is running at port ${PORT}`.yellow.bold);
+});
