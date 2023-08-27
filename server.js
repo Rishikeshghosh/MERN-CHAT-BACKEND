@@ -5,19 +5,21 @@ const UserRoute = require("./Routes/userRoutes");
 const ChatRoute = require("./Routes/chatRoutes");
 const MessageRoute = require("./Routes/messageRoutes");
 const connectDB = require("./config/mongoDb");
-const color = require("colors");
 const cors = require("cors");
 const path = require("path");
 
 /* const { notFound, errorHandler } = require("./Middleware/errorHandler"); */
-const PORT = process.env.PORT;
+
 app.use(cors());
 app.use(express.json());
 connectDB();
+app.use("/", (req, res) => {
+  res.send("hello");
+});
 /* app.use("/api", UserRoute); */
-app.use("/api/chat", ChatRoute);
-app.use("/api/message", MessageRoute);
-
+/* app.use("/api/chat", ChatRoute); */
+/* app.use("/api/message", MessageRoute); */
+const PORT = process.env.PORT;
 app.listen(PORT, () => {
-  console.log(`Server is running at port ${PORT}`.yellow.bold);
+  console.log(`Server is running at port ${PORT}`);
 });
